@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpaPluginProjectSettings">
+    <option name="lastSelectedLanguage" value="Java" />
+  </component>
+  <component name="ReverseEngineeringSettings">
+    <database-infos>
+      <database-info dbms-id="postgres">
+        <mapping-types>
+          <mapping-type sql-type="text" java-class="java.lang.String" />
+          <mapping-type sql-type="integer" java-class="java.lang.Integer" />
+        </mapping-types>
+      </database-info>
+    </database-infos>
+  </component>
+</project>
