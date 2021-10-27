@@ -30,6 +30,18 @@ public class Episode {
     @Column(name = "episode_platform")
     private String episodePlatform;
 
+    @ManyToOne
+    @JoinColumn(name = "episode_dj_id")
+    private EpisodeDj episodeDj;
+
+    public EpisodeDj getEpisodeDj() {
+        return episodeDj;
+    }
+
+    public void setEpisodeDj(EpisodeDj episodeDj) {
+        this.episodeDj = episodeDj;
+    }
+
     public String getEpisodePlatform() {
         return episodePlatform;
     }
