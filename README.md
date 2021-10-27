@@ -1,8 +1,8 @@
-# crater-backend
+# Crater
 
-REST API for the Crater music recommendation engine & DJ data explorer.
+Crater is a web app that provides music recommendations with a human touch. We believe that humans make the best mixtapes, so we've pulled the most inventive DJ sets from the web and used the data to generate recommended playlists for our users.
 
-Methods:
-- Authentication
-- GET all artists
-- GET all songs by a specific artist
+Try it out at https://crater-web-server.herokuapp.com/
+
+# License
+[MIT](https://choosealicense.com/licenses/mit/)
