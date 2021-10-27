@@ -8,4 +8,4 @@ Try out the MVP at https://crater-web-server.herokuapp.com/
 [MIT](https://choosealicense.com/licenses/mit/)
 
 Architecture diagrams:
-![Architecture diagrams created with Excalidraw](https://github.com/drex04/crater-scraper/blob/main/notebook/Architecture/Data%20Pipeline%2027%20Oct%202021.png)
+![Architecture diagrams created with Excalidraw](https://github.com/drex04/crater-web-app/blob/master/notebook/arch-diagrams/Target%20Arch%2027%20Oct%202021.png)
