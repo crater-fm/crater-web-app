@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.scss';
 import Searchbar from './Searchbar'
 import ResultsTable from './ResultsTable'
+import ResultsList from './ResultsList'
 import Filter from './Filter'
 
 class App extends React.Component {
     render() {
+        const searchString = 'four tet'
+        
         const searchResults = [
             {
                 type: 'Artist',
@@ -66,7 +69,7 @@ class App extends React.Component {
                 <Searchbar />
                 <br></br>
                 <br></br>
-                <ResultsTable searchResults={searchResults}/>
+                <ResultsList searchResults={searchResults} searchString={searchString}/>
             </div>
         )
     }
