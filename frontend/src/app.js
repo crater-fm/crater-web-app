@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.scss';
+import './index.css';
 import Searchbar from './Searchbar'
-import ResultsTable from './ResultsTable'
 import ResultsList from './ResultsList'
 import Filter from './Filter'
+
+// TODO: figure out how to use React Native Safe Area Context
 
 class App extends React.Component {
     render() {
         const searchString = 'four tet'
-        
+
         const searchResults = [
             {
                 type: 'Artist',
@@ -56,20 +57,38 @@ class App extends React.Component {
                 youtubeLink: null
             },
         ]
-        
-        
-        
+
+        //TODO: get input from search bar and pass to api request
+        const input = ''
+
+        /* TODO: fetch data from API instead
+        const performSearch = (input) => {
+            fetch(`http://www.drewnollsch.com/crater/api/global/${input}`)
+                .then(response => response.json())
+                .then(responseData => {
+                    this.setState({
+                        results: responseData.results,
+                        loading: false
+                    });
+                })
+                .catch(error => {
+                    console.log('Error fetching and parsing data', error);
+                });
+        }
+        const searchResults = responseData.results;
+        */
+
         return (
             <div className="container">
-                <h1>Welcome to Crater!</h1>
-                <p>Your portal to music discovery.</p>
-                <br></br>
-                <br></br>
-                <Filter />
-                <Searchbar />
-                <br></br>
-                <br></br>
-                <ResultsList searchResults={searchResults} searchString={searchString}/>
+                <div className="page-header">
+                    <h1>Crater</h1>
+                    <p>Your portal to music discovery.</p>
+                    <Searchbar input={input} />
+                </div>
+                <div>
+                    <Filter />
+                    <ResultsList searchResults={searchResults} searchString={searchString} />
+                </div>
             </div>
         )
     }

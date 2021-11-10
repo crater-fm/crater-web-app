@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import './index.scss';
+import './index.css';
 import ArtistResult from './ArtistResult.js'
 import DjResult from './DjResult.js'
 import EpisodeResult from './EpisodeResult.js'
 import SongResult from './SongResult.js'
+import GenreResult from './GenreResult.js'
 
 
 const ListHeader = (props) => {
         const searchResults = props.searchResults;
         const searchString = props.searchString;
         return (
-            <h3>{searchResults.length} search results for {searchString}</h3>
+            <h4 className='results-header'>{searchResults.length} search results for {searchString}</h4>
         )
 }
 
@@ -27,11 +28,13 @@ const ListHeader = (props) => {
                     return (<EpisodeResult key={index} value={row} />);
                 case 'Song':
                     return (<SongResult key={index} value={row} />);
+                case 'Genre':
+                    return (<GenreResult key={index} value={row} />);
                 default:
                     return (<p>Entry does not have a valid search result type</p>)
             }
         })
-        return <ul>{rows}</ul>
+        return <ul className='search-results'>{rows}</ul>
     }
 
     class ResultsList extends Component {
@@ -42,7 +45,6 @@ const ListHeader = (props) => {
             return (
                 <div className="results">
                     <ListHeader searchResults={searchResults} searchString={searchString} />
-                    <br></br>
                     <ListBody searchResults={searchResults} searchString={searchString} />
                 </div>
             )
