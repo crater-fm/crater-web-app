@@ -4,10 +4,12 @@ import './index.css';
 import Searchbar from './Searchbar'
 import ResultsList from './ResultsList'
 import Filter from './Filter'
+import LoginControl from './LoginControl.js'
 
 // TODO: figure out how to use React Native Safe Area Context
 
 class App extends React.Component {
+
     render() {
         const searchString = 'four tet'
 
@@ -58,8 +60,6 @@ class App extends React.Component {
             },
         ]
 
-        //TODO: get input from search bar and pass to api request
-        const input = ''
 
         /* TODO: fetch data from API instead
         const performSearch = (input) => {
@@ -82,8 +82,9 @@ class App extends React.Component {
             <div className="container">
                 <div className="page-header">
                     <h1>Crater</h1>
+                    <LoginControl />
                     <p>Your portal to music discovery.</p>
-                    <Searchbar input={input} />
+                    <Searchbar />
                 </div>
                 <div>
                     <Filter />
