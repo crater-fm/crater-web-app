@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
 import LoginButton from './LoginButton.js'
 import LogoutButton from './LoginButton.js'

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
 import ntsIcon from './img/nts_icon.png'
 import spotifyIcon from './img/Spotify_Icon_RGB_Black.png'
@@ -9,7 +8,7 @@ const SpotifyIcon = (props) => {
     const value = props.value;
     if (value.spotifyWebLink) {
         return (
-            <a href={value.spotifyWebLink}><img src={spotifyIcon} alttext='Open in Spotify' className='icon'></img></a>
+            <a href={value.spotifyWebLink}><img src={spotifyIcon} alt='Open in Spotify' className='icon'></img></a>
         )
     } else {
         return null
@@ -20,7 +19,7 @@ const NtsIcon = (props) => {
     const value = props.value;
     if (value.ntsLink) {
         return (
-            <a href={value.ntsLink}><img src={ntsIcon} alttext='Open in NTS Radio' className='icon'></img></a>
+            <a href={value.ntsLink}><img src={ntsIcon} alt='Open in NTS Radio' className='icon'></img></a>
         )
     } else {
         return null
@@ -31,7 +30,7 @@ const YoutubeIcon = (props) => {
     const value = props.value;
     if (value.youtubeLink) {
         return (
-            <a href={value.youtubeLink}><img src={youtubeIcon} alttext='Search on Youtube' className='icon'></img></a>
+            <a href={value.youtubeLink}><img src={youtubeIcon} alt='Search on Youtube' className='icon'></img></a>
         )
     } else {
         return null

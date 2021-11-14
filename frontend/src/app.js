@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
 import Searchbar from './Searchbar'
 import ResultsList from './ResultsList'
@@ -9,10 +8,46 @@ import LoginControl from './LoginControl.js'
 // TODO: figure out how to use React Native Safe Area Context
 
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            searchValue: '',
+            searchResults: [],
+            loading: true
+        };
+        this.handleSearchValueChange = this.handleSearchValueChange.bind(this);
+        this.handleSearchValueSubmit = this.handleSearchValueSubmit.bind(this);
+    }
+    
+    handleSearchValueChange(value) {
+        this.setState({searchValue: value})
+    }
+
+    handleSearchValueSubmit(event) {
+        const searchValue = this.state.searchValue;
+
+        const performSearch = (searchValue) => {
+            fetch(`http://www.drewnollsch.com/crater/api/${searchValue}`)
+                .then(response => response.json())
+                .then(responseData => {
+                    this.setState({
+                        searchResults: responseData.results,
+                        loading: false
+                    });
+                })
+                .catch(error => {
+                    console.log('Error fetching and parsing data', error);
+                    alert('error fetching data')
+                });
+        }
+
+        performSearch(searchValue)
+    }
+    
+
 
     render() {
-        const searchString = 'four tet'
-
+        /*
         const searchResults = [
             {
                 type: 'Artist',
@@ -59,24 +94,11 @@ class App extends React.Component {
                 youtubeLink: null
             },
         ]
-
-
-        /* TODO: fetch data from API instead
-        const performSearch = (input) => {
-            fetch(`http://www.drewnollsch.com/crater/api/global/${input}`)
-                .then(response => response.json())
-                .then(responseData => {
-                    this.setState({
-                        results: responseData.results,
-                        loading: false
-                    });
-                })
-                .catch(error => {
-                    console.log('Error fetching and parsing data', error);
-                });
-        }
-        const searchResults = responseData.results;
         */
+
+
+        const searchValue = this.state.searchValue;
+        const searchResults = this.state.searchResults;
 
         return (
             <div className="container">
@@ -84,11 +106,11 @@ class App extends React.Component {
                     <h1>Crater</h1>
                     <LoginControl />
                     <p>Your portal to music discovery.</p>
-                    <Searchbar />
+                    <Searchbar searchValue={searchValue} onSearchValueChange={this.handleSearchValueChange} onSearchValueSubmit={this.handleSearchValueSubmit} />
                 </div>
                 <div>
                     <Filter />
-                    <ResultsList searchResults={searchResults} searchString={searchString} />
+                    <ResultsList searchResults={searchResults} searchValue={searchValue} />
                 </div>
             </div>
         )

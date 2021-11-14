@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
 import ArtistResult from './ArtistResult.js'
 import DjResult from './DjResult.js'
@@ -10,9 +9,9 @@ import GenreResult from './GenreResult.js'
 
 const ListHeader = (props) => {
     const searchResults = props.searchResults;
-    const searchString = props.searchString;
+    const searchValue = props.searchValue;
     return (
-        <h4 className='results-header'>{searchResults.length} search results for {searchString}</h4>
+        <h4 className='results-header'>{searchResults.length} search results for {searchValue}</h4>
     )
 }
 
@@ -46,12 +45,12 @@ const ListBody = (props) => {
 class ResultsList extends Component {
     render() {
         const { searchResults } = this.props
-        const { searchString } = this.props
+        const { searchValue } = this.props
 
         return (
             <div className="results">
-                <ListHeader searchResults={searchResults} searchString={searchString} />
-                <ListBody searchResults={searchResults} searchString={searchString} />
+                <ListHeader searchResults={searchResults} searchValue={searchValue} />
+                <ListBody searchResults={searchResults} searchValue={searchValue} />
             </div>
         )
     }
