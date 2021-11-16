@@ -47,7 +47,7 @@ class App extends React.Component {
 
 
     render() {
-        /*
+        /* TEST DATA - USE TO DESIGN API
         const searchResults = [
             {
                 type: 'Artist',
