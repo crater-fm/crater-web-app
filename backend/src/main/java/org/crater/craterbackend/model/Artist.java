@@ -10,7 +10,7 @@ public class Artist {
     @Column(name = "artist_id", nullable = false)
     private Integer id;
 
-    @Lob
+
     @Column(name = "artist_name", nullable = false)
     private String artistName;
 
