@@ -1,14 +1,14 @@
 package org.crater.craterbackend;
 
 import org.springframework.boot.SpringApplication;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CraterBackendApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CraterBackendApplication.class, args);
-		System.out.println("Hello World!");
+		SpringApplication.run(Application.class, args);
 
 	}
 

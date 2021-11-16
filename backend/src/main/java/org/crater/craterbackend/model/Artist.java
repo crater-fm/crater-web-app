@@ -1,4 +1,4 @@
-package org.crater.craterbackend;
+package org.crater.craterbackend.model;
 
 import javax.persistence.*;
 
@@ -29,4 +29,10 @@ public class Artist {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Artist [id=" + id + ", name=" + artistName + "]";
+    }
+
 }

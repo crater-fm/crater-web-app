@@ -1,5 +1,7 @@
 package org.crater.craterbackend;
 
+import org.crater.craterbackend.model.Artist;
+
 import javax.persistence.*;
 
 @Table(name = "song_artist")
