@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SearchApiConfig(AppConfig):
+class CraterApiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'search_api'
+    name = 'crater_api'
