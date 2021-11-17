@@ -27,26 +27,37 @@ class App extends React.Component {
         const searchValue = this.state.searchValue;
 
         const performSearch = (searchValue) => {
-            fetch(`http://www.drewnollsch.com/crater/api/${searchValue}`)
-                .then(response => response.json())
-                .then(responseData => {
-                    this.setState({
-                        searchResults: responseData.results,
-                        loading: false
-                    });
+            fetch(`http://127.0.0.1:8000/api/search/${searchValue}`, {
+                method: 'GET',
+                headers: {
+                    //'Content-Type': 'application/json'
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            })
+                .then((response) => {
+                    return response.json()
+                })
+                .then((data) => {
+                    this.setState({searchResults: data})
+                })
+                .then(() => {
+                    alert('Successfully fetched data')
                 })
                 .catch(error => {
                     console.log('Error fetching and parsing data', error);
                     alert('error fetching data')
-                });
+                })
         }
-
         performSearch(searchValue)
     }
-    
+
 
 
     render() {
+        
+       
+        
+        
         /* TEST DATA - USE TO DESIGN API
         const searchResults = [
             {

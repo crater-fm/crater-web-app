@@ -17,6 +17,26 @@ const ListHeader = (props) => {
 
 const ListBody = (props) => {
 
+    Object.entries(props.searchResults).forEach((entry) => {
+        const [key, value] = entry;
+        return <p>{value}</p>
+
+        switch (key) {
+            case 'artists':
+                break;
+            case 'djs':
+                break;
+            case 'episodes':
+                break;
+            default:
+                return (<p>Entry does not have a valid search result type</p>);
+        }
+    }
+    )
+    return <ul className='search-results'>{rows}</ul>
+}
+
+/*
     const rows = props.searchResults.map((row, index) => {
         switch (row.type) {
             case 'Artist':
@@ -39,8 +59,11 @@ const ListBody = (props) => {
                 return (<p>Entry does not have a valid search result type</p>)
         }
     })
+   
+
     return <ul className='search-results'>{rows}</ul>
 }
+ * /
 
 class ResultsList extends Component {
     render() {
