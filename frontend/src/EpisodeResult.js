@@ -10,10 +10,10 @@ class EpisodeResult extends Component {
                 <div className='info'>
                     <h6>Episode</h6>
                     <p>{value.episode_name}</p>
+                    <p>Date: {value.episode_date}</p>
                 </div>
                 <div className='links'>
-                    {/* TODO: add Icon function once links are added to database & API
-                     <Icons value={value} /> */}
+                     <Icons value={value} />
                 </div>
             </li>
         )

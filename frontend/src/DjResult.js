@@ -12,8 +12,7 @@ class DjResult extends Component {
                     <p>{value.dj_name}</p>
                 </div>
                 <div className='links'>
-                    {/* TODO: add Icon function once links are added to database & API
-                     <Icons value={value} /> */}
+                     <Icons value={value} />
                 </div>
             </li>
         )

@@ -9,11 +9,10 @@ class ArtistResult extends Component {
             <li className='artist'>
                 <div className='info'>
                     <h6>Artist</h6>
-                    <p>{value.artist_name}</p>
+                    <a href='http://www.drewnollsch.com'>{value.artist_name}</a>
                 </div>
                 <div className='links'>
-                    {/* TODO: add Icon function once links are added to database & API
-                     <Icons value={value} /> */}
+                     <Icons value={value} />
                 </div>
             </li>
         )

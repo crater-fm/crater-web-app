@@ -17,9 +17,9 @@ const SpotifyIcon = (props) => {
 
 const NtsIcon = (props) => {
     const value = props.value;
-    if (value.ntsLink) {
+    if (value.episode_url && value.episode_url.includes('nts.live')) {
         return (
-            <a href={value.ntsLink}><img src={ntsIcon} alt='Open in NTS Radio' className='icon'></img></a>
+            <a href={value.episode_url}><img src={ntsIcon} alt='Open in NTS Radio' className='icon'></img></a>
         )
     } else {
         return null
