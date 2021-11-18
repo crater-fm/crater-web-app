@@ -48,6 +48,7 @@ def artist_name_contains(request, keyword):
         return JsonResponse(serializer.data, safe=False)
 
 
+@csrf_exempt
 def global_search(request, keyword):
     """
     Search music data tables for a keyword and return all results
