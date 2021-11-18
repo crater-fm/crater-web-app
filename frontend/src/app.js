@@ -58,40 +58,6 @@ class App extends React.Component {
                 spotifyWebLink: 'https://open.spotify.com/artist/7Eu1txygG6nJttLHbZdQOh',
                 youtubeLink: 'https://www.youtube.com/results?search_query=four+tet'
             },
-            {
-                type: 'DJ',
-                id: 4720,
-                name: 'Four Tet',
-                date: null,
-                platform: null,
-                ntsLink: 'https://www.nts.live/shows/four-tet',
-                spotifyLink: 'spotify:artist:7Eu1txygG6nJttLHbZdQOh',
-                spotifyWebLink: 'https://open.spotify.com/artist/7Eu1txygG6nJttLHbZdQOh',
-                youtubeLink: 'https://www.youtube.com/results?search_query=four+tet'
-            },
-            {
-                type: 'Episode',
-                id: 4323,
-                name: 'Four Tet and Floating Points',
-                date: '16/03/17',
-                platform: 'NTS Radio',
-                ntsLink: 'https://www.nts.live/shows/four-tet/episodes/four-tet-and-floating-points-16th-march-2017',
-                spotifyLink: null,
-                spotifyWebLink: null,
-                youtubeLink: null
-            },
-            {
-                type: 'Episode',
-                id: 246,
-                name: 'Four Tet and Floating Points (Live at Brilliant Corners)',
-                date: '10/07/17',
-                platform: 'NTS Radio',
-                ntsLink: 'https://www.nts.live/shows/four-tet/episodes/four-tet-and-floating-points-live-from-brilliant-corners-10th-july-2017',
-                spotifyLink: null,
-                spotifyWebLink: null,
-                youtubeLink: null
-            },
-        ]
         */
 
 
