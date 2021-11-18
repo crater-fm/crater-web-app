@@ -19,7 +19,6 @@ const ListBody = (props) => {
 
     Object.entries(props.searchResults).forEach((entry) => {
         const [key, value] = entry;
-        return <p>{value}</p>
 
         switch (key) {
             case 'artists':
@@ -33,7 +32,7 @@ const ListBody = (props) => {
         }
     }
     )
-    return <ul className='search-results'>{rows}</ul>
+    return null
 }
 
 /*
@@ -63,7 +62,7 @@ const ListBody = (props) => {
 
     return <ul className='search-results'>{rows}</ul>
 }
- * /
+ */
 
 class ResultsList extends Component {
     render() {

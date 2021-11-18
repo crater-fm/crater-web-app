@@ -4,6 +4,7 @@ import Searchbar from './Searchbar'
 import ResultsList from './ResultsList'
 import Filter from './Filter'
 import LoginControl from './LoginControl.js'
+import axios from "axios";
 
 // TODO: figure out how to use React Native Safe Area Context
 
@@ -18,46 +19,32 @@ class App extends React.Component {
         this.handleSearchValueChange = this.handleSearchValueChange.bind(this);
         this.handleSearchValueSubmit = this.handleSearchValueSubmit.bind(this);
     }
-    
+
     handleSearchValueChange(value) {
-        this.setState({searchValue: value})
+        this.setState({ searchValue: value })
     }
 
     handleSearchValueSubmit(event) {
         const searchValue = this.state.searchValue;
 
-        const performSearch = (searchValue) => {
-            fetch(`http://127.0.0.1:8000/api/search/${searchValue}`, {
-                method: 'GET',
-                headers: {
-                    //'Content-Type': 'application/json'
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
+        event.preventDefault();
+        axios.get(`http://127.0.0.1:8000/api/search/${searchValue}`)
+            .then((res) => {
+                this.setState({searchResults: res.data});
             })
-                .then((response) => {
-                    return response.json()
-                })
-                .then((data) => {
-                    this.setState({searchResults: data})
-                })
-                .then(() => {
-                    alert('Successfully fetched data')
-                })
-                .catch(error => {
-                    console.log('Error fetching and parsing data', error);
-                    alert('error fetching data')
-                })
-        }
-        performSearch(searchValue)
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
     }
 
 
 
     render() {
-        
-       
-        
-        
+
+
+
+
         /* TEST DATA - USE TO DESIGN API
         const searchResults = [
             {
