@@ -11,7 +11,7 @@ import axios from "axios";
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = { l, 
             searchValue: '',
             searchResults: [],
             loading: true
