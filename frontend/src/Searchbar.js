@@ -19,13 +19,7 @@ class Searchbar extends Component {
         this.props.onSearchValueSubmit(event);
     }
 
-    
-    /*
-    handleSubmit(event) {
-        alert('Search database for the following: ' + this.state.searchValue);
-        event.preventDefault();
-    }
-    */
+
 
     render() {
         const searchValue = this.props.searchValue;

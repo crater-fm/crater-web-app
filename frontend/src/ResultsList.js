@@ -9,7 +9,7 @@ const ListHeader = (props) => {
     const searchResults = props.searchResults;
     const searchValue = props.searchValue;
     var resultsLength = 0;
-    Object.entries(props.searchResults).forEach((entry) => {
+    Object.entries(searchResults).forEach((entry) => {
         const [key, value] = entry;
         resultsLength = resultsLength + value.length
     })
@@ -48,42 +48,10 @@ const ListBody = (props) => {
         }
   
     })
-    console.log(resultsList)
-
-
-
 
     return( <ul className='search-results'>{resultsList}</ul> )
 }
 
-/*
-    const rows = props.searchResults.map((row, index) => {
-        switch (row.type) {
-            case 'Artist':
-                // TODO: It's not recommended to use index as the key. If there is a source ID available, should use that instead
-                return (<ArtistResult key={index} value={row} />);
-                break;
-            case 'DJ':
-                return (<DjResult key={index} value={row} />);
-                break;
-            case 'Episode':
-                return (<EpisodeResult key={index} value={row} />);
-                break;
-            case 'Song':
-                return (<SongResult key={index} value={row} />);
-                break;
-            case 'Genre':
-                return (<GenreResult key={index} value={row} />);
-                break;
-            default:
-                return (<p>Entry does not have a valid search result type</p>)
-        }
-    })
-   
-
-    return <ul className='search-results'>{rows}</ul>
-}
- */
 
 class ResultsList extends Component {
     render() {

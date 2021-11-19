@@ -42,25 +42,6 @@ class App extends React.Component {
 
     render() {
 
-
-
-
-        /* TEST DATA - USE TO DESIGN API
-        const searchResults = [
-            {
-                type: 'Artist',
-                id: 3044,
-                name: 'Four Tet',
-                date: null,
-                platform: null,
-                ntsLink: 'https://www.nts.live/artists/408-four-tet',
-                spotifyLink: 'spotify:artist:7Eu1txygG6nJttLHbZdQOh',
-                spotifyWebLink: 'https://open.spotify.com/artist/7Eu1txygG6nJttLHbZdQOh',
-                youtubeLink: 'https://www.youtube.com/results?search_query=four+tet'
-            },
-        */
-
-
         const searchValue = this.state.searchValue;
         const searchResults = this.state.searchResults;
 

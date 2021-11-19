@@ -23,7 +23,7 @@ def artist_list(request):
 @csrf_exempt
 def artist_detail(request, pk):
     """
-    Retrieve, update, or delete an artist
+    Retrieve an artist
     """
     try:
         artist = Artist.objects.get(pk=pk)
