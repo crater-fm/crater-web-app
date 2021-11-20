@@ -1,1 +1,1 @@
-web: gunicorn crater-backend.wsgi
+web: gunicorn backend.wsgi
