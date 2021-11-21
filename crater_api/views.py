@@ -6,9 +6,9 @@ from crater_api.models import Artist, Dj, Episode
 from crater_api.serializers import ArtistSerializer, DjSerializer, EpisodeSerializer, BookmarkSerializer, GlobalSearchSerializer
 from collections import namedtuple
 
+# TODO: update to psycopg2 instead of psycopg-binary
+
 """ ARTIST """
-
-
 @csrf_exempt
 def artist_list(request):
     """
