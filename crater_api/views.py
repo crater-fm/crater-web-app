@@ -21,7 +21,7 @@ def artist_list(request):
 
 
 @csrf_exempt
-def artist_detail(request, pk):
+def artist_details(request, pk):
     """
     Retrieve an artist
     """
