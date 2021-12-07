@@ -60,7 +60,7 @@ def global_search(request, keyword):
             artists=Artist.objects.annotate(search=SearchVector(
                 'artist_name'),).filter(search=keyword),
             djs=Dj.objects.annotate(search=SearchVector(
-                'dj_name'),).filter(search=keyword),
+                'dj_name'),).filter(search=keyword).annotate(episode_count=Count('episodes')).order_by('-episode_count'),
             episodes=Episode.objects.annotate(
                 search=SearchVector('episode_name', 'episode_url', 'episode_description'),).filter(search=keyword),
         )
