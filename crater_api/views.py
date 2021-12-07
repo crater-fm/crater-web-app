@@ -73,8 +73,11 @@ def global_search(request, keyword):
 
 @csrf_exempt
 def artist_details(request, artist_id):
-    ArtistDetails = namedtuple('ArtistDetails', ('episodes', 'djs', 'song_artists'))
+    ArtistDetails = namedtuple('ArtistDetails', ('artist', 'episodes', 'djs', 'song_artists'))
     try:
+        # Get artist name
+        artist = Artist.objects.get(pk=artist_id)
+        
         # Find episodes which played a specific artist, ranked by episode date
         episodes = Episode.objects.filter(song_artists__artist_id=artist_id).order_by(
             '-episode_date')
@@ -86,7 +89,7 @@ def artist_details(request, artist_id):
         song_artists = SongArtist.objects.filter(artist_id=artist_id).annotate(play_count=Count('setlist')).order_by('-play_count').select_related('song').select_related('artist')
         
         # Package for serialization
-        artist_details = ArtistDetails(episodes, djs, song_artists,)
+        artist_details = ArtistDetails(artist, episodes, djs, song_artists,)
     
     # Serialize
     except Episode.DoesNotExist:

@@ -48,6 +48,7 @@ class GlobalSearchSerializer(serializers.Serializer):
     episodes = EpisodeSerializer(many=True)
     
 class ArtistDetailsSerializer(serializers.Serializer):
+    artist = ArtistSerializer(many=False)
     episodes = EpisodeSerializer(many=True)
     djs = DjSerializer(many=True)
     song_artists = SongArtistSerializer(many=True)
