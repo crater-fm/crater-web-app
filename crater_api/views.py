@@ -1,9 +1,11 @@
 from django.http import HttpResponse, JsonResponse
+from django.db.models import Count
+from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.contrib.postgres.search import SearchVector
-from crater_api.models import Artist, Dj, Episode
-from crater_api.serializers import ArtistSerializer, DjSerializer, EpisodeSerializer, BookmarkSerializer, GlobalSearchSerializer
+from crater_api.models import Artist, Dj, Episode, Genre, SongArtist
+from crater_api.serializers import ArtistSerializer, BookmarkSerializer, EpisodeSerializer, DjSerializer, GlobalSearchSerializer, ArtistDetailsSerializer
 from collections import namedtuple
 
 # TODO: update to psycopg2 instead of psycopg-binary
@@ -19,14 +21,13 @@ def artist_list(request):
         serializer = ArtistSerializer(artists, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-
 @csrf_exempt
-def artist_details(request, pk):
+def get_artist(request, pk):
     """
-    Retrieve an artist
+    Retrieve an artist record
     """
     try:
-        artist = Artist.objects.get(pk=pk)
+        artist = Artist.objects.get(pk)
     except Artist.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
@@ -54,7 +55,6 @@ def global_search(request, keyword):
     Search music data tables for a keyword and return all results
     """
     SearchResults = namedtuple('SearchResults', ('artists', 'djs', 'episodes'))
-
     try:
         search_results = SearchResults(
             artists=Artist.objects.annotate(search=SearchVector(
@@ -64,28 +64,40 @@ def global_search(request, keyword):
             episodes=Episode.objects.annotate(
                 search=SearchVector('episode_name', 'episode_url', 'episode_description'),).filter(search=keyword),
         )
-        #print(search_results)
     except Artist.DoesNotExist & Dj.DoesNotExist & Episode.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
         serializer = GlobalSearchSerializer(search_results)
         return JsonResponse(serializer.data, safe=False)
 
-    """
+
+@csrf_exempt
+def artist_details(request, artist_id):
+    ArtistDetails = namedtuple('ArtistDetails', ('episodes', 'djs', 'song_artists'))
+    try:
+        # Find episodes which played a specific artist, ranked by episode date
+        episodes = Episode.objects.filter(song_artists__artist_id=artist_id).order_by(
+            '-episode_date')
+
+        # Find DJs which played that artist          
+        djs = Dj.objects.filter(episodes__in=episodes)
+    
+        # Songs by the artist which were included in Setlists (ranked by play count, descending)
+        song_artists = SongArtist.objects.filter(artist_id=artist_id).annotate(play_count=Count('setlist')).order_by('-play_count').select_related('song').select_related('artist')
+        
+        # Package for serialization
+        artist_details = ArtistDetails(episodes, djs, song_artists,)
+    
+    # Serialize
+    except Episode.DoesNotExist:
+        return HttpResponse(status=404)
     if request.method == 'GET':
-        artist_serializer = ArtistSerializer(artists, many=True)
-        artists_json = JsonResponse(artist_serializer.data, safe=False)
-        artists_json_enclosed = [{'dataType': 'Artist', 'data': artists_json}]
-        dj_serializer = DjSerializer(djs, many=True)
-        dj_json = JsonResponse(dj_serializer.data, safe=False)
-        print(ArtistSerializer.Meta.model)
-        return artists_json
-"""
+        serializer = ArtistDetailsSerializer(artist_details)
+        return JsonResponse(serializer.data, safe=False)
 
 
-""" BOOKMARK """
 
-
+""" BOOKMARK MANAGEMENT """
 @csrf_exempt
 def bookmark_list(request):
     """

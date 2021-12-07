@@ -47,10 +47,12 @@ INSTALLED_APPS = [
     'collections',
     'corsheaders',
     'crater_api.apps.CraterApiConfig',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -159,6 +161,11 @@ LOGGING = {
         },
     },
 }
+
+# Configure internal IP addresses
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())

@@ -8,7 +8,7 @@
             "name": "Python: Django",
             "type": "python",
             "request": "launch",
-            "program": "backend/manage.py",
+            "program": "manage.py",
             "args": [
                 "runserver"
             ],
