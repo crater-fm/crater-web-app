@@ -80,7 +80,7 @@ def artist_details(request, artist_id):
             '-episode_date')
 
         # Find DJs which played that artist          
-        djs = Dj.objects.filter(episodes__in=episodes)
+        djs = Dj.objects.filter(episodes__in=episodes).annotate(episode_count=Count('episodes')).order_by('-episode_count')
     
         # Songs by the artist which were included in Setlists (ranked by play count, descending)
         song_artists = SongArtist.objects.filter(artist_id=artist_id).annotate(play_count=Count('setlist')).order_by('-play_count').select_related('song').select_related('artist')

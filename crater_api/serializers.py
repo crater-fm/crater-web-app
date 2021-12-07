@@ -21,9 +21,10 @@ class SongArtistSerializer(serializers.ModelSerializer):
         fields = ['song_artist_id', 'song', 'artist', 'play_count']
         
 class DjSerializer(serializers.ModelSerializer):
+    episode_count = serializers.IntegerField()
     class Meta:
         model = Dj
-        fields = ['dj_id', 'dj_name', 'nts_artist_url']
+        fields = ['dj_id', 'dj_name', 'nts_artist_url', 'episode_count']
         
 class EpisodeSerializer(serializers.ModelSerializer):
     class Meta:
