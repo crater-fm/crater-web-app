@@ -19,7 +19,7 @@ def all_artists(request):
             'setlist')).order_by('-play_count').select_related('artist')
 
         artists = Artist.objects.filter(songartist__in=song_artists).annotate(
-            play_count=Count('songartist')).order_by('-play_count')[:1000]
+            play_count=Count('songartist')).order_by('-play_count')[:500]
         
     except Artist.DoesNotExist:
         return HttpResponse(status=404)
