@@ -5,20 +5,26 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.contrib.postgres.search import SearchVector
 from crater_api.models import Artist, Dj, Episode, Genre, SongArtist
-from crater_api.serializers import ArtistSerializer, BookmarkSerializer, EpisodeSerializer, DjSerializer, DjEpCountSerializer, GlobalSearchSerializer, ArtistDetailsSerializer, DjDetailsSerializer
+from crater_api.serializers import ArtistSerializer, GlobalSearchSerializer, ArtistDetailsSerializer, DjDetailsSerializer, ArtistPlayCountSerializer
 from collections import namedtuple
 
 # TODO: update to psycopg2 instead of psycopg-binary
 
 """ ARTIST """
 @csrf_exempt
-def artist_list(request):
-    """
-    List all artists, or create a new artist.
-    """
+def all_artists(request):
+    # List all artists, ranked by play count
+    try:
+        song_artists = SongArtist.objects.all().annotate(play_count=Count(
+            'setlist')).order_by('-play_count').select_related('artist')
+
+        artists = Artist.objects.filter(songartist__in=song_artists).annotate(
+            play_count=Count('songartist')).order_by('-play_count')
+        
+    except Artist.DoesNotExist:
+        return HttpResponse(status=404)
     if request.method == 'GET':
-        artists = Artist.objects.all()
-        serializer = ArtistSerializer(artists, many=True)
+        serializer = ArtistPlayCountSerializer(artists, many=True)
         return JsonResponse(serializer.data, safe=False)
 
 @csrf_exempt
