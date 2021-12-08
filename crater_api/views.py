@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.contrib.postgres.search import SearchVector
 from crater_api.models import Artist, Dj, Episode, Genre, SongArtist
-from crater_api.serializers import ArtistSerializer, BookmarkSerializer, EpisodeSerializer, DjSerializer, GlobalSearchSerializer, ArtistDetailsSerializer
+from crater_api.serializers import ArtistSerializer, BookmarkSerializer, EpisodeSerializer, DjSerializer, DjEpCountSerializer, GlobalSearchSerializer, ArtistDetailsSerializer, DjDetailsSerializer
 from collections import namedtuple
 
 # TODO: update to psycopg2 instead of psycopg-binary
@@ -48,7 +48,7 @@ def artist_name_contains(request, keyword):
         serializer = ArtistSerializer(artists, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-
+# For Global Search
 @csrf_exempt
 def global_search(request, keyword):
     """
@@ -70,7 +70,7 @@ def global_search(request, keyword):
         serializer = GlobalSearchSerializer(search_results)
         return JsonResponse(serializer.data, safe=False)
 
-
+# For Artist info page:
 @csrf_exempt
 def artist_details(request, artist_id):
     ArtistDetails = namedtuple('ArtistDetails', ('artist', 'episodes', 'djs', 'song_artists'))
@@ -92,10 +92,40 @@ def artist_details(request, artist_id):
         artist_details = ArtistDetails(artist, episodes, djs, song_artists,)
     
     # Serialize
-    except Episode.DoesNotExist:
+    # TODO: add & Artist DoesNotExist & DJ DoesNotExist
+    except Episode.DoesNotExist & Dj.DoesNotExist & SongArtist.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
         serializer = ArtistDetailsSerializer(artist_details)
+        return JsonResponse(serializer.data, safe=False)
+
+
+# For DJ Info Page:
+# TODO: add Platforms that they broadcast on
+@csrf_exempt
+def dj_details(request, dj_id):
+    DjDetails = namedtuple('DjDetails', ('dj', 'episodes', 'artists'))
+    try:
+        # Get DJ name
+        dj = Dj.objects.get(pk=dj_id)
+
+        # Find episodes performed by a DJ, ranked by episode date
+        episodes = Episode.objects.filter(dj__dj_id=dj_id).order_by(
+            '-episode_date')
+
+        # Find artists which the DJ uses in their mixes
+        song_artists = SongArtist.objects.filter(episode__in=episodes).annotate(play_count=Count('setlist')).order_by('-play_count').select_related('song').select_related('artist')
+        
+        artists = Artist.objects.filter(songartist__in=song_artists).annotate(play_count=Count('songartist')).order_by('-play_count')
+        
+        # Package for serialization
+        dj_details = DjDetails(dj, episodes, artists)
+
+    # Serialize
+    except Dj.DoesNotExist & Episode.DoesNotExist & Artist.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'GET':
+        serializer = DjDetailsSerializer(dj_details)
         return JsonResponse(serializer.data, safe=False)
 
 

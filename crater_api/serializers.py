@@ -5,6 +5,13 @@ class ArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
         fields = ['artist_id', 'artist_name']
+        
+
+class ArtistPlayCountSerializer(serializers.ModelSerializer):
+    play_count = serializers.IntegerField()
+    class Meta:
+        model = Artist
+        fields = ['artist_id', 'artist_name', 'play_count']
 
 
 class SongSerializer(serializers.ModelSerializer):
@@ -21,6 +28,11 @@ class SongArtistSerializer(serializers.ModelSerializer):
         fields = ['song_artist_id', 'song', 'artist', 'play_count']
         
 class DjSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dj
+        fields = ['dj_id', 'dj_name', 'nts_artist_url']
+        
+class DjEpCountSerializer(serializers.ModelSerializer):
     episode_count = serializers.IntegerField()
     class Meta:
         model = Dj
@@ -50,6 +62,11 @@ class GlobalSearchSerializer(serializers.Serializer):
 class ArtistDetailsSerializer(serializers.Serializer):
     artist = ArtistSerializer(many=False)
     episodes = EpisodeSerializer(many=True)
-    djs = DjSerializer(many=True)
+    djs = DjEpCountSerializer(many=True)
     song_artists = SongArtistSerializer(many=True)
-        
+    
+
+class DjDetailsSerializer(serializers.Serializer):
+    dj = DjSerializer(many=False)
+    episodes = EpisodeSerializer(many=True)
+    artists = ArtistPlayCountSerializer(many=True)     
