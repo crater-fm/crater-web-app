@@ -13,13 +13,13 @@ from collections import namedtuple
 """ ARTIST """
 @csrf_exempt
 def all_artists(request):
-    # List all artists, ranked by play count
+    # List top 1000 artists, ranked by play count
     try:
         song_artists = SongArtist.objects.all().annotate(play_count=Count(
             'setlist')).order_by('-play_count').select_related('artist')
 
         artists = Artist.objects.filter(songartist__in=song_artists).annotate(
-            play_count=Count('songartist')).order_by('-play_count')
+            play_count=Count('songartist')).order_by('-play_count')[:1000]
         
     except Artist.DoesNotExist:
         return HttpResponse(status=404)
