@@ -13,13 +13,13 @@ from collections import namedtuple
 """ ARTIST """
 @csrf_exempt
 def all_artists(request):
-    # List top 1000 artists, ranked by play count
+    # List top artists, ranked by play count
     try:
         song_artists = SongArtist.objects.all().annotate(play_count=Count(
             'setlist')).order_by('-play_count').select_related('artist')
 
         artists = Artist.objects.filter(songartist__in=song_artists).annotate(
-            play_count=Count('songartist')).order_by('-play_count')[:500]
+            play_count=Count('songartist')).order_by('-play_count')[:100]
         
     except Artist.DoesNotExist:
         return HttpResponse(status=404)
@@ -85,14 +85,16 @@ def artist_details(request, artist_id):
         artist = Artist.objects.get(pk=artist_id)
         
         # Find episodes which played a specific artist, ranked by episode date
-        episodes = Episode.objects.filter(song_artists__artist_id=artist_id).order_by(
-            '-episode_date')
+        episodes = Episode.objects.filter(
+            song_artists__artist_id=artist_id).order_by('-episode_date')[:15]
 
         # Find DJs which played that artist          
-        djs = Dj.objects.filter(episodes__in=episodes).annotate(episode_count=Count('episodes')).order_by('-episode_count')
+        djs = Dj.objects.filter(episodes__in=episodes).annotate(
+            episode_count=Count('episodes')).order_by('-episode_count')[:15]
     
         # Songs by the artist which were included in Setlists (ranked by play count, descending)
-        song_artists = SongArtist.objects.filter(artist_id=artist_id).annotate(play_count=Count('setlist')).order_by('-play_count').select_related('song').select_related('artist')
+        song_artists = SongArtist.objects.filter(artist_id=artist_id).annotate(play_count=Count(
+            'setlist')).order_by('-play_count').select_related('song').select_related('artist')[:15]
         
         # Package for serialization
         artist_details = ArtistDetails(artist, episodes, djs, song_artists,)
@@ -113,16 +115,18 @@ def dj_details(request, dj_id):
     DjDetails = namedtuple('DjDetails', ('dj', 'episodes', 'artists'))
     try:
         # Get DJ name
-        dj = Dj.objects.get(pk=dj_id)
+        dj = Dj.objects.get(pk=dj_id)[:15]
 
         # Find episodes performed by a DJ, ranked by episode date
         episodes = Episode.objects.filter(dj__dj_id=dj_id).order_by(
-            '-episode_date')
+            '-episode_date')[:15]
 
         # Find artists which the DJ uses in their mixes
-        song_artists = SongArtist.objects.filter(episode__in=episodes).annotate(play_count=Count('setlist')).order_by('-play_count').select_related('song').select_related('artist')
+        song_artists = SongArtist.objects.filter(episode__in=episodes).annotate(play_count=Count(
+            'setlist')).order_by('-play_count').select_related('song').select_related('artist')
         
-        artists = Artist.objects.filter(songartist__in=song_artists).annotate(play_count=Count('songartist')).order_by('-play_count')
+        artists = Artist.objects.filter(songartist__in=song_artists).annotate(
+            play_count=Count('songartist')).order_by('-play_count')[:15]
         
         # Package for serialization
         dj_details = DjDetails(dj, episodes, artists)
