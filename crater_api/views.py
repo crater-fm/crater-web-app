@@ -100,7 +100,6 @@ def artist_details(request, artist_id):
         artist_details = ArtistDetails(artist, episodes, djs, song_artists,)
     
     # Serialize
-    # TODO: add & Artist DoesNotExist & DJ DoesNotExist
     except Episode.DoesNotExist & Dj.DoesNotExist & SongArtist.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
@@ -115,7 +114,7 @@ def dj_details(request, dj_id):
     DjDetails = namedtuple('DjDetails', ('dj', 'episodes', 'artists'))
     try:
         # Get DJ name
-        dj = Dj.objects.get(pk=dj_id)[:15]
+        dj = Dj.objects.get(pk=dj_id)
 
         # Find episodes performed by a DJ, ranked by episode date
         episodes = Episode.objects.filter(dj__dj_id=dj_id).order_by(
@@ -132,7 +131,7 @@ def dj_details(request, dj_id):
         dj_details = DjDetails(dj, episodes, artists)
 
     # Serialize
-    except Dj.DoesNotExist & Episode.DoesNotExist & Artist.DoesNotExist:
+    except Episode.DoesNotExist & Dj.DoesNotExist & Artist.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
         serializer = DjDetailsSerializer(dj_details)
