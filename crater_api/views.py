@@ -4,8 +4,10 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.contrib.postgres.search import SearchVector
 from crater_api.models import Artist, Dj, Episode, SongArtist
-from crater_api.serializers import ArtistSerializer, GlobalSearchSerializer, ArtistDetailsSerializer, DjDetailsSerializer, ArtistPlayCountSerializer, DjEpCountSerializer
+from crater_api.serializers import ArtistSerializer, GlobalSearchSerializer, ArtistDetailsSerializer, DjDetailsSerializer, ArtistPlayCountSerializer, DjEpCountSerializer, EpisodeSerializer
 from collections import namedtuple
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 # TODO: update to psycopg2 instead of psycopg-binary
 
@@ -39,6 +41,7 @@ def artist_name_contains(request, keyword):
 
 # For Global Search
 @csrf_exempt
+@api_view(['GET'])
 def global_search(request, keyword):
     """
     Search music data tables for a keyword and return all results
@@ -61,6 +64,7 @@ def global_search(request, keyword):
 
 # For Artist info page:
 @csrf_exempt
+@api_view(['GET'])
 def artist_details(request, artist_id):
     ArtistDetails = namedtuple('ArtistDetails', ('artist', 'episodes', 'djs', 'song_artists'))
     try:
@@ -68,22 +72,25 @@ def artist_details(request, artist_id):
         artist = Artist.objects.get(pk=artist_id)
         
         # Find episodes which played a specific artist, ranked by episode date
-        episodes = Episode.objects.filter(
+        episodes = Episode.objects.all().prefetch_related('setlist_set')
+        episodes = episodes.filter(
             song_artists__artist_id=artist_id).order_by('-episode_date')[:15]
 
         # Find DJs which played that artist          
-        djs = Dj.objects.filter(episodes__in=episodes).annotate(
+        djs = Dj.objects.all().prefetch_related('episodes')
+        djs = djs.filter(episodes__in=episodes).annotate(
             episode_count=Count('episodes')).order_by('-episode_count')[:15]
     
         # Songs by the artist which were included in Setlists (ranked by play count, descending)
-        song_artists = SongArtist.objects.filter(artist_id=artist_id).annotate(play_count=Count(
+        song_artists = SongArtist.objects.filter(artist_id=artist_id).prefetch_related('setlist_set')
+        song_artists = song_artists.annotate(play_count=Count(
             'setlist')).order_by('-play_count').select_related('song').select_related('artist')[:15]
         
         # Package for serialization
         artist_details = ArtistDetails(artist, episodes, djs, song_artists,)
     
     # Serialize
-    except Episode.DoesNotExist & Dj.DoesNotExist & SongArtist.DoesNotExist:
+    except Artist.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
         serializer = ArtistDetailsSerializer(artist_details)
@@ -91,30 +98,33 @@ def artist_details(request, artist_id):
 
 
 # For DJ Info Page:
-# TODO: add Platforms that they broadcast on
 @csrf_exempt
+@api_view(['GET'])
 def dj_details(request, dj_id):
     DjDetails = namedtuple('DjDetails', ('dj', 'episodes', 'artists'))
     try:
         # Get DJ name
-        dj = Dj.objects.get(pk=dj_id)
+        dj = Dj.objects.get(dj_id=dj_id)
 
         # Find episodes performed by a DJ, ranked by episode date
-        episodes = Episode.objects.filter(dj__dj_id=dj_id).order_by(
+        episodes = Episode.objects.all().prefetch_related('dj_set')
+        episodes = episodes.filter(dj__dj_id=dj_id).order_by(
             '-episode_date')[:15]
 
         # Find artists which the DJ uses in their mixes
-        song_artists = SongArtist.objects.filter(episode__in=episodes).annotate(play_count=Count(
+        song_artists = SongArtist.objects.all().prefetch_related('setlist').prefetch_related('episode')
+        song_artists = song_artists.filter(episode__in=episodes).annotate(play_count=Count(
             'setlist')).order_by('-play_count').select_related('song').select_related('artist')
         
-        artists = Artist.objects.filter(songartist__in=song_artists).annotate(
+        artists = Artist.objects.all().prefetch_related('songartist_set')
+        artists = artists.filter(songartist__in=song_artists).annotate(
             play_count=Count('songartist')).order_by('-play_count')[:15]
         
         # Package for serialization
         dj_details = DjDetails(dj, episodes, artists)
 
     # Serialize
-    except Episode.DoesNotExist & Dj.DoesNotExist & Artist.DoesNotExist:
+    except Dj.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
         serializer = DjDetailsSerializer(dj_details)
@@ -122,14 +132,16 @@ def dj_details(request, dj_id):
 
 
 @csrf_exempt
+@api_view(['GET'])
 def all_artists(request):
     # List top artists, ranked by play count
     try:
-        song_artists = SongArtist.objects.all().annotate(play_count=Count(
+        song_artists = SongArtist.objects.all().select_related('setlist')
+        song_artists = song_artists.annotate(play_count=Count(
             'setlist')).order_by('-play_count').select_related('artist')
 
         artists = Artist.objects.filter(songartist__in=song_artists).annotate(
-            play_count=Count('songartist')).order_by('-play_count')[:100]
+            play_count=Count('songartist')).order_by('-play_count')
 
     except Artist.DoesNotExist:
         return HttpResponse(status=404)
@@ -138,23 +150,29 @@ def all_artists(request):
         return JsonResponse(serializer.data, safe=False)
     
 @csrf_exempt
+@api_view(['GET'])
 def all_djs(request):
     # List top artists, ranked by play count
     try:
-        djs = Dj.objects.all().annotate(episode_count=Count('episodes')).order_by('-episode_count')[:100]
-
+        djs = Dj.objects.all().prefetch_related('episodes')
+        djs = djs.annotate(episode_count=Count('episodes')).order_by('-episode_count')
     except Dj.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
         serializer = DjEpCountSerializer(djs, many=True)
         return JsonResponse(serializer.data, safe=False)
+    
 
-
-
-
-
-
-
+@csrf_exempt
+@api_view(['GET'])
+def all_episodes(request):
+    try:
+        episodes = Episode.objects.all().order_by('-episode_date')
+    except Episode.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'GET':
+        serializer = EpisodeSerializer(episodes, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 
 """ BOOKMARK MANAGEMENT """

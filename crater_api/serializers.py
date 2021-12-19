@@ -70,3 +70,8 @@ class DjDetailsSerializer(serializers.Serializer):
     dj = DjSerializer(many=False)
     episodes = EpisodeSerializer(many=True)
     artists = ArtistPlayCountSerializer(many=True)     
+
+class HomepageSummary(serializers.Serializer):
+    artists = ArtistPlayCountSerializer(many=True)
+    dj = DjSerializer(many=True)
+    episodes = EpisodeSerializer(many=True)

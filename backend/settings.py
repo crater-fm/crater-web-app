@@ -146,6 +146,12 @@ CORS_ALLOW_ALL_ORIGINS: False
 
 CSRF_TRUSTED_ORIGINS = env('DJANGO_ALLOWED_ORIGINS').split()
 
+# Pagination settings
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20
+}
+
 # Logging
 LOGGING = {
     'version': 1,
@@ -172,6 +178,7 @@ if DEBUG is True:
       def __contains__(self, item):
           return True
   INTERNAL_IPS = AllIPs()
+  
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
