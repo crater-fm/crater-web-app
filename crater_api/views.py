@@ -8,6 +8,7 @@ from crater_api.serializers import ArtistSerializer, GlobalSearchSerializer, Art
 from collections import namedtuple
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import generics
 
 # TODO: update to psycopg2 instead of psycopg-binary
 
@@ -82,7 +83,7 @@ def artist_details(request, artist_id):
             episode_count=Count('episodes')).order_by('-episode_count')[:15]
     
         # Songs by the artist which were included in Setlists (ranked by play count, descending)
-        song_artists = SongArtist.objects.filter(artist_id=artist_id).prefetch_related('setlist_set')
+        song_artists = SongArtist.objects.filter(artist_id=artist_id).prefetch_related('setlist')
         song_artists = song_artists.annotate(play_count=Count(
             'setlist')).order_by('-play_count').select_related('song').select_related('artist')[:15]
         
@@ -131,37 +132,47 @@ def dj_details(request, dj_id):
         return JsonResponse(serializer.data, safe=False)
 
 
-@csrf_exempt
-@api_view(['GET'])
-def all_artists(request):
-    # List top artists, ranked by play count
-    try:
-        song_artists = SongArtist.objects.all().select_related('setlist')
-        song_artists = song_artists.annotate(play_count=Count(
-            'setlist')).order_by('-play_count').select_related('artist')
+# @csrf_exempt
+# @api_view(['GET'])
+# def all_artists(request):
+#     # List top artists, ranked by play count
+#     try:
+#         song_artists = SongArtist.objects.all().select_related('setlist')
+#         song_artists = song_artists.annotate(play_count=Count(
+#             'setlist')).order_by('-play_count').select_related('artist')
 
-        artists = Artist.objects.filter(songartist__in=song_artists).annotate(
-            play_count=Count('songartist')).order_by('-play_count')
+#         artists = Artist.objects.filter(songartist__in=song_artists).annotate(
+#             play_count=Count('songartist')).order_by('-play_count')
 
-    except Artist.DoesNotExist:
-        return HttpResponse(status=404)
-    if request.method == 'GET':
-        serializer = ArtistPlayCountSerializer(artists, many=True)
-        return JsonResponse(serializer.data, safe=False)
+#     except Artist.DoesNotExist:
+#         return HttpResponse(status=404)
+#     if request.method == 'GET':
+#         serializer = ArtistPlayCountSerializer(artists, many=True)
+#         return JsonResponse(serializer.data, safe=False)
     
-@csrf_exempt
-@api_view(['GET'])
-def all_djs(request):
-    # List top artists, ranked by play count
-    try:
-        djs = Dj.objects.all().prefetch_related('episodes')
-        djs = djs.annotate(episode_count=Count('episodes')).order_by('-episode_count')
-    except Dj.DoesNotExist:
-        return HttpResponse(status=404)
-    if request.method == 'GET':
-        serializer = DjEpCountSerializer(djs, many=True)
-        return JsonResponse(serializer.data, safe=False)
+class ArtistListPlayCount(generics.ListCreateAPIView):
+    queryset = Artist.objects.annotate(
+        play_count=Count('songartist')).order_by('-play_count')[:500]
+    serializer_class = ArtistPlayCountSerializer
+
     
+# @csrf_exempt
+# @api_view(['GET'])
+# def all_djs(request):
+#     # List top artists, ranked by play count
+#     try:
+#         djs = Dj.objects.all().prefetch_related('episodes')
+#         djs = djs.annotate(episode_count=Count('episodes')).order_by('-episode_count')
+#     except Dj.DoesNotExist:
+#         return HttpResponse(status=404)
+#     if request.method == 'GET':
+#         serializer = DjEpCountSerializer(djs, many=True)
+#         return JsonResponse(serializer.data, safe=False)
+
+class DjListEpisodeCount(generics.ListCreateAPIView):
+    djs = Dj.objects.all().prefetch_related('episodes')
+    queryset = djs.annotate(episode_count=Count('episodes')).order_by('-episode_count')[:500]
+    serializer_class = DjEpCountSerializer
 
 @csrf_exempt
 @api_view(['GET'])
