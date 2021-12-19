@@ -174,16 +174,20 @@ class DjListEpisodeCount(generics.ListCreateAPIView):
     queryset = djs.annotate(episode_count=Count('episodes')).order_by('-episode_count')[:500]
     serializer_class = DjEpCountSerializer
 
-@csrf_exempt
-@api_view(['GET'])
-def all_episodes(request):
-    try:
-        episodes = Episode.objects.all().order_by('-episode_date')
-    except Episode.DoesNotExist:
-        return HttpResponse(status=404)
-    if request.method == 'GET':
-        serializer = EpisodeSerializer(episodes, many=True)
-        return JsonResponse(serializer.data, safe=False)
+# @csrf_exempt
+# @api_view(['GET'])
+# def all_episodes(request):
+#     try:
+#         episodes = Episode.objects.all().order_by('-episode_date')
+#     except Episode.DoesNotExist:
+#         return HttpResponse(status=404)
+#     if request.method == 'GET':
+#         serializer = EpisodeSerializer(episodes, many=True)
+#         return JsonResponse(serializer.data, safe=False)
+
+class EpisodeList(generics.ListCreateAPIView):
+    queryset = Episode.objects.order_by('-episode_date')[:500]
+    serializer_class = EpisodeSerializer
 
 
 """ BOOKMARK MANAGEMENT """
