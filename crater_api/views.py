@@ -83,8 +83,7 @@ def artist_details(request, artist_id):
             episode_count=Count('episodes')).order_by('-episode_count')[:15]
     
         # Songs by the artist which were included in Setlists (ranked by play count, descending)
-        song_artists = SongArtist.objects.filter(artist_id=artist_id).prefetch_related('setlist')
-        song_artists = song_artists.annotate(play_count=Count(
+        song_artists = SongArtist.objects.filter(artist_id=artist_id).annotate(play_count=Count(
             'setlist')).order_by('-play_count').select_related('song').select_related('artist')[:15]
         
         # Package for serialization
@@ -113,9 +112,7 @@ def dj_details(request, dj_id):
             '-episode_date')[:15]
 
         # Find artists which the DJ uses in their mixes
-        song_artists = SongArtist.objects.all().prefetch_related('setlist').prefetch_related('episode')
-        song_artists = song_artists.filter(episode__in=episodes).annotate(play_count=Count(
-            'setlist')).order_by('-play_count').select_related('song').select_related('artist')
+        song_artists = SongArtist.objects.all().prefetch_related('episode').filter(episode__in=episodes).annotate(play_count=Count('setlist')).order_by('-play_count').select_related('song').select_related('artist')
         
         artists = Artist.objects.all().prefetch_related('songartist_set')
         artists = artists.filter(songartist__in=song_artists).annotate(
