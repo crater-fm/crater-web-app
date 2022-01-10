@@ -179,4 +179,4 @@ if DEBUG is True:
   INTERNAL_IPS = AllIPs()
 
 # Add AWS Elastic Beanstalk to ALLOWED_HOSTS
-ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+ALLOWED_HOSTS = ['crater-api.eu-west-2.elasticbeanstalk.com']
