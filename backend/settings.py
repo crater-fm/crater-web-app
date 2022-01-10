@@ -178,3 +178,5 @@ if DEBUG is True:
           return True
   INTERNAL_IPS = AllIPs()
 
+# Add AWS Elastic Beanstalk to ALLOWED_HOSTS
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
