@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
-import django_heroku
 import environ
 import dj_database_url
 
@@ -178,7 +177,4 @@ if DEBUG is True:
       def __contains__(self, item):
           return True
   INTERNAL_IPS = AllIPs()
-  
 
-# Activate Django-Heroku.
-django_heroku.settings(locals())
