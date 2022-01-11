@@ -181,5 +181,5 @@ if DEBUG is True:
 # Add AWS Elastic Beanstalk to ALLOWED_HOSTS
 ALLOWED_HOSTS = [
     'crater-api.eu-west-2.elasticbeanstalk.com',
-    'crater-api.drewnollsch.com'
+    'crater-api.drewnollsch.com',
     ]
