@@ -1,11 +1,9 @@
 # Crater
 
-Crater is a web app that provides music recommendations with a human touch. We believe that humans make the best mixtapes, so we've pulled the most inventive DJ sets from the web and used the data to generate recommended playlists for our users.
-
-Try out the MVP at https://crater-web-server.herokuapp.com/
-
+## Project Description
+[Crater](https://crater.drewnollsch.com) is a single-page application that lets users browse through DJ tracklist data aggregated from internet radio stations.
+* Responsive React front-end using React-Router, Material-UI, and CSS-in-JS, deployed with Create-React-App on Vercel. Link to the front-end Github repo [here.](https://github.com/drex04/crater-frontend)
+* Back-end REST API using Django-REST-Framework and PostgreSQL, deployed on AWS Elastic Beanstalk, secured with HTTPS
+* Sketched user flows and wireframes in Figma with a UX designer and managed work using a Kanban board and GitHub issues
 # License
 [MIT](https://choosealicense.com/licenses/mit/)
-
-Architecture diagrams:
-![Architecture diagrams created with Excalidraw](https://github.com/drex04/crater-web-app/blob/master/notebook/arch-diagrams/Target%20Arch%2027%20Oct%202021.png)
