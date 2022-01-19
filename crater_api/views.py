@@ -129,64 +129,21 @@ def dj_details(request, dj_id):
         return JsonResponse(serializer.data, safe=False)
 
 
-# @csrf_exempt
-# @api_view(['GET'])
-# def all_artists(request):
-#     # List top artists, ranked by play count
-#     try:
-#         song_artists = SongArtist.objects.all().select_related('setlist')
-#         song_artists = song_artists.annotate(play_count=Count(
-#             'setlist')).order_by('-play_count').select_related('artist')
 
-#         artists = Artist.objects.filter(songartist__in=song_artists).annotate(
-#             play_count=Count('songartist')).order_by('-play_count')
-
-#     except Artist.DoesNotExist:
-#         return HttpResponse(status=404)
-#     if request.method == 'GET':
-#         serializer = ArtistPlayCountSerializer(artists, many=True)
-#         return JsonResponse(serializer.data, safe=False)
+## GET all Artists, DJs, Episodes
     
 class ArtistListPlayCount(generics.ListCreateAPIView):
-    queryset = Artist.objects.annotate(
-        play_count=Count('songartist')).order_by('-play_count')[:500]
+    queryset = Artist.objects.order_by('-play_count')[:500]
     serializer_class = ArtistPlayCountSerializer
-    print(queryset.query)
-
-    
-# @csrf_exempt
-# @api_view(['GET'])
-# def all_djs(request):
-#     # List top artists, ranked by play count
-#     try:
-#         djs = Dj.objects.all().prefetch_related('episodes')
-#         djs = djs.annotate(episode_count=Count('episodes')).order_by('-episode_count')
-#     except Dj.DoesNotExist:
-#         return HttpResponse(status=404)
-#     if request.method == 'GET':
-#         serializer = DjEpCountSerializer(djs, many=True)
-#         return JsonResponse(serializer.data, safe=False)
 
 class DjListEpisodeCount(generics.ListCreateAPIView):
-    djs = Dj.objects.all().prefetch_related('episodes')
-    queryset = djs.annotate(episode_count=Count('episodes')).order_by('-episode_count')[:500]
+    queryset = Dj.objects.order_by('-episode_count')[:500]
     serializer_class = DjEpCountSerializer
-    print(queryset.query)
-
-# @csrf_exempt
-# @api_view(['GET'])
-# def all_episodes(request):
-#     try:
-#         episodes = Episode.objects.all().order_by('-episode_date')
-#     except Episode.DoesNotExist:
-#         return HttpResponse(status=404)
-#     if request.method == 'GET':
-#         serializer = EpisodeSerializer(episodes, many=True)
-#         return JsonResponse(serializer.data, safe=False)
 
 class EpisodeList(generics.ListCreateAPIView):
     queryset = Episode.objects.order_by('-episode_date')[:500]
     serializer_class = EpisodeSerializer
+
 
 
 """ BOOKMARK MANAGEMENT """

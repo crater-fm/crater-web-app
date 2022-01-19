@@ -11,6 +11,7 @@ from django.db import models
 class Artist(models.Model):
     artist_id = models.AutoField(primary_key=True)
     artist_name = models.TextField(unique=True)
+    play_count = models.IntegerField()
     songs = models.ManyToManyField('Song', through='SongArtist')
 
     class Meta:
@@ -103,6 +104,7 @@ class Dj(models.Model):
     dj_id = models.AutoField(primary_key=True)
     dj_name = models.TextField(unique=True)
     nts_artist_url = models.TextField(blank=True, null=True)
+    episode_count = models.IntegerField()
     episodes = models.ManyToManyField('Episode', through='EpisodeDj')
 
     class Meta:

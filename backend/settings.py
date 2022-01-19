@@ -182,4 +182,7 @@ if DEBUG is True:
 ALLOWED_HOSTS = [
     'crater-api.eu-west-2.elasticbeanstalk.com',
     'crater-api.drewnollsch.com',
+    'localhost',
+    '127.0.0.1',
+    '127.0.0.1:8000'
     ]
