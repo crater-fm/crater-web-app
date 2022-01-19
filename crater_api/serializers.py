@@ -12,7 +12,12 @@ class ArtistPlayCountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
         fields = ['artist_id', 'artist_name', 'play_count']
-
+        
+class DjDetails_ArtistPlayCountSerializer(serializers.ModelSerializer):
+    djdetails_play_count = serializers.IntegerField()
+    class Meta:
+        model = Artist
+        fields = ['artist_id', 'artist_name', 'djdetails_play_count']
 
 class SongSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,10 +27,10 @@ class SongSerializer(serializers.ModelSerializer):
 class SongArtistSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(many=False)
     song = SongSerializer(many=False)
-    play_count = serializers.IntegerField()
+    songartist_play_count = serializers.IntegerField()
     class Meta:
         model = SongArtist
-        fields = ['song_artist_id', 'song', 'artist', 'play_count']
+        fields = ['song_artist_id', 'song', 'artist', 'songartist_play_count']
         
 class DjSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,6 +42,13 @@ class DjEpCountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dj
         fields = ['dj_id', 'dj_name', 'nts_artist_url', 'episode_count']
+        
+
+class ArtistDetails_DjEpCountSerializer(serializers.ModelSerializer):
+    artistdetails_episode_count = serializers.IntegerField()
+    class Meta:
+        model = Dj
+        fields = ['dj_id', 'dj_name', 'nts_artist_url', 'artistdetails_episode_count']
         
 class EpisodeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,14 +74,14 @@ class GlobalSearchSerializer(serializers.Serializer):
 class ArtistDetailsSerializer(serializers.Serializer):
     artist = ArtistSerializer(many=False)
     episodes = EpisodeSerializer(many=True)
-    djs = DjEpCountSerializer(many=True)
+    djs = ArtistDetails_DjEpCountSerializer(many=True)
     song_artists = SongArtistSerializer(many=True)
     
 
 class DjDetailsSerializer(serializers.Serializer):
     dj = DjSerializer(many=False)
     episodes = EpisodeSerializer(many=True)
-    artists = ArtistPlayCountSerializer(many=True)     
+    artists = DjDetails_ArtistPlayCountSerializer(many=True)
 
 class HomepageSummary(serializers.Serializer):
     artists = ArtistPlayCountSerializer(many=True)

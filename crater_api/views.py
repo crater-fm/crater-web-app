@@ -83,16 +83,16 @@ def artist_details(request, artist_id):
         # Find episodes which played a specific artist, ranked by episode date
         episodes = Episode.objects.all().prefetch_related('setlist_set')
         episodes = episodes.filter(
-            song_artists__artist_id=artist_id).order_by('-episode_date')[:15]
+            song_artists__artist_id=artist_id).order_by('-episode_date', 'episode_id')[:15]
 
         # Find DJs which played that artist
         djs = Dj.objects.all().prefetch_related('episodes')
         djs = djs.filter(episodes__in=episodes).annotate(
-            episode_count=Count('episodes')).order_by('-episode_count')[:15]
+            artistdetails_episode_count=Count('episodes')).order_by('-artistdetails_episode_count', 'dj_id')[:15]
 
         # Songs by the artist which were included in Setlists (ranked by play count, descending)
-        song_artists = SongArtist.objects.filter(artist_id=artist_id).annotate(play_count=Count(
-            'setlist')).order_by('-play_count').select_related('song').select_related('artist')[:15]
+        song_artists = SongArtist.objects.filter(artist_id=artist_id).annotate(songartist_play_count=Count(
+            'setlist')).order_by('-songartist_play_count', 'song_artist_id').select_related('song').select_related('artist')[:15]
 
         # Package for serialization
         artist_details = ArtistDetails(artist, episodes, djs, song_artists,)
@@ -121,11 +121,11 @@ def dj_details(request, dj_id):
 
         # Find artists which the DJ uses in their mixes
         song_artists = SongArtist.objects.all().prefetch_related('episode').filter(episode__in=episodes).annotate(
-            play_count=Count('setlist')).order_by('-play_count').select_related('song').select_related('artist')
+            songartist_play_count=Count('setlist')).order_by('-songartist_play_count').select_related('song').select_related('artist')
 
         artists = Artist.objects.all().prefetch_related('songartist_set')
         artists = artists.filter(songartist__in=song_artists).annotate(
-            play_count=Count('songartist')).order_by('-play_count')[:15]
+            djdetails_play_count=Count('songartist')).order_by('-djdetails_play_count')[:15]
 
         # Package for serialization
         dj_details = DjDetails(dj, episodes, artists)
