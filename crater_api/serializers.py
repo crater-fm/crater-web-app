@@ -55,8 +55,8 @@ class BookmarkSerializer(serializers.ModelSerializer):
         fields = ['bookmark_id', 'user']
         
 class GlobalSearchSerializer(serializers.Serializer):
-    artists = ArtistSerializer(many=True)
-    djs = DjSerializer(many=True)
+    artists = ArtistPlayCountSerializer(many=True)
+    djs = DjEpCountSerializer(many=True)
     episodes = EpisodeSerializer(many=True)
     
 class ArtistDetailsSerializer(serializers.Serializer):
