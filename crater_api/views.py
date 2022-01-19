@@ -151,6 +151,7 @@ class ArtistListPlayCount(generics.ListCreateAPIView):
     queryset = Artist.objects.annotate(
         play_count=Count('songartist')).order_by('-play_count')[:500]
     serializer_class = ArtistPlayCountSerializer
+    print(queryset.query)
 
     
 # @csrf_exempt
@@ -170,6 +171,7 @@ class DjListEpisodeCount(generics.ListCreateAPIView):
     djs = Dj.objects.all().prefetch_related('episodes')
     queryset = djs.annotate(episode_count=Count('episodes')).order_by('-episode_count')[:500]
     serializer_class = DjEpCountSerializer
+    print(queryset.query)
 
 # @csrf_exempt
 # @api_view(['GET'])
